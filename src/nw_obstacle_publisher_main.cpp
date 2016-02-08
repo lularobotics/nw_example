@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     spinner.start();
 
     std_msgs::String sphere_x_y_z_r;
-    nh.getParam("/obstacle", sphere_x_y_z_r);
+    nh.getParam("/obstacle", sphere_x_y_z_r.data);
 
     ros::Publisher obstable_publisher =
         nh.advertise<std_msgs::String>("/obstable", 0);
