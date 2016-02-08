@@ -1,0 +1,249 @@
+// Command line comment stripping and printing of json file:
+//   jq . <<< `cat riemo_robot.json | ./jsmin`
+// jsmin can be found here: https://github.com/douglascrockford/JSMin
+
+{
+  "apiVersion": 1.0,
+
+  // Collection of generlized coordinates. These coordinates define the
+  // dimensions of the optimization. The rules for mapping them to active dofs of
+  // the underlying model are given below.
+  "configurationSpace": {
+    "generalizedCoordinates": [
+      "mico_joint_1",
+      "mico_joint_2",
+      "mico_joint_3",
+      "mico_joint_4",
+      "mico_joint_5",
+      "mico_joint_6",
+      "mico_joint_finger_1",
+      "mico_joint_finger_2"
+    ],
+    "taskSpaceIdentifier": "cspace",
+    "rootLink": "mico_link_base"
+  },
+
+  "defaultConfiguration": [
+    //0, 0, 0, 0, 0, 0, 0.69, 0.69
+    1.19, 0, -.47, 0, 0, 0, 0.69, 0.69
+    //1.42, -1.56, -1.57, -0.05, -0.03, -0.03, 0.69, 0.69
+    //-2.20819, -3.25214, 3.77252, -0.630773, -2.25782, -0.03, 0.69, 0.69
+    //-2.20819, -3.25214, 3.77252, -0.630773, -3.25782, -0.03, 0.69, 0.69
+  ],
+
+  // Definitions of how generalized coordinates are mapped to corresponding
+  // active dofs of the underlying model (e.g. the URDF). Most extraction rules
+  // will simply be one-to-one mappings. However, an example of a more
+  // sophisticated mapping is the Barrett hand, which has only 4 generalized
+  // coordinates, but 8 underlying moving joints in total represented in the
+  // URDF (2 joints per finer * 3 fingers + 2 finger spread).
+  //
+  // Any constants used in the scalar and offset entries should be defined in a
+  // "constants" property. 
+  //
+  // Note that the sideAgnosticJointName is the side agnostic identifier. E.g.
+  // if the actual joint is R_SFE, the tag should just be SFE.
+  "activeDofs": {
+    "dofs": [
+      {
+        "jointName": "mico_joint_1", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_1" }
+      },
+      {
+        "jointName": "mico_joint_2", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_2" }
+      },
+      {
+        "jointName": "mico_joint_3", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_3" }
+      },
+      {
+        "jointName": "mico_joint_4", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_4" }
+      },
+      {
+        "jointName": "mico_joint_5", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_5" }
+      },
+      {
+        "jointName": "mico_joint_6", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_6" }
+      },
+      {
+        "jointName": "mico_joint_finger_1", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_finger_1" }
+      },
+      {
+        "jointName": "mico_joint_finger_tip_1", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_finger_1" }
+      },
+      {
+        "jointName": "mico_joint_finger_2", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_finger_2" }
+      },
+      {
+        "jointName": "mico_joint_finger_tip_2", 
+        "extractionRule": { "generalizedCoordinateName": "mico_joint_finger_2" }
+      }
+    ]
+  },
+
+  // Define kinematic task spaces as a link name with (optionally) a
+  // corresponding semantic name name with (optionally) a corresponding
+  // semantic name. The semantic names are useful when there's a semantic
+  // difference between the name of the link (or segment) and the name of the
+  // link's origin.  For instance, the origin of the forearm is typically known
+  // an the "elbow", but the name of the link (segment) is (correctly) called
+  // the "forearm".
+  //
+  // Each kinematic task space has a corresponding axis task space. The axis
+  // task space has an implicit name of <task_space>_axis. For instance, the
+  // elbow's axis task space name is ELBOW_axis.
+  "kinematicTaskSpaces": [
+    {
+      "semanticName": "mico_link_1",
+      "linkName": "mico_link_1"
+    },
+    {
+      "semanticName": "mico_link_2",
+      "linkName": "mico_link_2"
+    },
+    {
+      "semanticName": "mico_link_3",
+      "linkName": "mico_link_3"
+    },
+    {
+      "semanticName": "mico_link_4",
+      "linkName": "mico_link_4"
+    },
+    {
+      "semanticName": "mico_link_5",
+      "linkName": "mico_link_5"
+    },
+    {
+      "semanticName": "mico_link_hand",
+      "linkName": "mico_link_hand"
+    },
+    {
+      "semanticName": "finger_proximal_limb_1",
+      "linkName": "finger_proximal_limb_1"
+    },
+    {
+      "semanticName": "finger_distal_limb_1",
+      "linkName": "finger_distal_limb_1",
+      "useFullFrame": true
+    },
+    {
+      "semanticName": "finger_proximal_limb_2",
+      "linkName": "finger_proximal_limb_2"
+    },
+    {
+      "semanticName": "finger_distal_limb_2",
+      "linkName": "finger_distal_limb_2",
+      "useFullFrame": true
+    },
+    {
+      "semanticName": "mico_end_effector",
+      "linkName": "mico_end_effector",
+      "useFullFrame": true
+    }
+  ],
+
+  // A composite task map is a weighted combination of the other task maps.
+  // End-effector entries below can reference both raw task maps (listed above)
+  // or composite task maps (listed here). Currently the rules are only allowed
+  // to reference base-line kinematic task maps (by their semantic name listed
+  // above), and the name of the composite task map must be unique since all
+  // task maps will be accessed equally by (semantic) name. 
+  //
+  // TODO: Implement recursive references in rules (build composite maps from
+  // composite maps).
+  "compositeTaskMaps": [
+    {
+      "name": "finger_tip_1",
+      "operator": {
+        "type": "sum",
+        "rules": [
+          {
+            "task_map": "finger_proximal_limb_1",
+            "weight": -1.0
+          },
+          {
+            "task_map": "finger_distal_limb_1",
+            "weight": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "name": "finger_tip_2",
+      "operator": {
+        "type": "sum",
+        "rules": [
+          {
+            "task_map": "finger_proximal_limb_2",
+            "weight": -2.0
+          },
+          {
+            "task_map": "finger_distal_limb_2",
+            "weight": 2.0
+          }
+        ]
+      }
+    }
+  ],
+
+  "endEffectorCollection": {
+    "basicEndEffectors": [
+      "mico_end_effector",
+      "finger_distal_limb_1",
+      "finger_distal_limb_2"
+    ],
+    "canonicalEndEffector": "mico_end_effector",
+    "canonicalEndEffectorAxis": "mico_end_effector_y",
+    "approachAxis": "mico_end_effector_z"
+  },
+
+  "primitiveDecomposition": [
+    {
+      "keyPoints": [ "mico_link_2", "mico_link_3" ],
+      "radius": 0.35
+    },
+    {
+      "keyPoints": [ "mico_link_3" ],
+      "radius": 0.05
+    },
+    {
+      "keyPoints": [ "mico_link_4" ],
+      "radius": 0.05
+    },
+    {
+      "keyPoints": [ "mico_link_5" ],
+      "radius": 0.07
+    },
+    {
+      "keyPoints": [ "mico_link_hand" ],
+      "radius": 0.07
+    },
+    {
+      "keyPoints": [ "mico_end_effector" ],
+      "radius": 0.00
+    },
+    {
+      "keyPoints": [ "finger_distal_limb_1" ],
+      "radius": 0.02
+    },
+    {
+      "keyPoints": [ "finger_proximal_limb_1" ],
+      "radius": 0.01
+    },
+    {
+      "keyPoints": [ "finger_distal_limb_2" ],
+      "radius": 0.02
+    },
+    {
+      "keyPoints": [ "finger_proximal_limb_2" ],
+      "radius": 0.01
+    }
+  ]
+}
