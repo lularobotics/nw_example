@@ -42,7 +42,12 @@ public:
 
     void Run()
     {
+        ros::NodeHandle nh;
         WaitForServer();
+
+        // set obstacle if needed here otherwise may be set in a config
+        // nh.setParam("/sphere_obstacle_constraint_csv", "-0.3 0.5 0");
+        // nh.setParam("/sphere_obstacle_frame_id", "root");
 
         // create and send a planning request
         riemo_move_action::PlanGoal goal = CreatePlanningRequest();
@@ -63,15 +68,27 @@ public:
     riemo_move_action::PlanGoal CreatePlanningRequest()
     {
         riemo_move_action::PlanGoal goal;
-        goal.target.x = 0.3;
-        goal.target.y = 0.5;
-        goal.target.z = 0.0;
+        ros::NodeHandle nh;
 
-        //        goal.approach_constraint;
-        //        goal.obstacle_linearization_constraint;
-        //        goal.passthrough_constraint;
-        //        goal.use_upright_orientation_constraint;
-        //        goal.use_upright_orientation_constraint_end_only;
+        // read from config
+
+        // set target
+        nh.getParam("/x_target_x", goal.target.x);
+        nh.getParam("/x_target_y", goal.target.y);
+        nh.getParam("/x_target_z", goal.target.z);
+
+        // set constraints
+        nh.getParam("/approach_constraint_csv", goal.approach_constraint_csv);
+        nh.getParam("/obstacle_linearization_constraint_csv",
+                    goal.obstacle_linearization_constraint_csv);
+        nh.getParam("/passthrough_constraint_csv",
+                    goal.passthrough_constraint_csv);
+
+        bool temp;
+        nh.getParam("/use_upright_orientation_constraint", temp);
+        goal.use_upright_orientation_constraint = temp;
+        nh.getParam("/use_upright_orientation_constraint_end_only", temp);
+        goal.use_upright_orientation_constraint_end_only = temp;
 
         return goal;
     }
@@ -139,26 +156,25 @@ public:
             {
                 ROS_INFO("Server response: planning done");
                 ROS_INFO("Requesting trajectory broadcast...");
-                double dilation_factor = 2.0;
+                double dilation_factor = 1.0;
                 double policy_execution_start_time = 0.0;
                 riemo_move_action::BroadcastTrajectoryGoal request =
                     CreateBroadcastRequest(dilation_factor,
                                            policy_execution_start_time);
 
                 SendTrajectoryBroadastingRequest(request);
-                ros::Duration(2.0).sleep();
+                                ros::Duration(2.0).sleep();
 
-                request = CreateBroadcastRequest(10., 0.);
-                SendTrajectoryBroadastingRequest(request);
-                ros::Duration(2.0).sleep();
+                                request = CreateBroadcastRequest(100., 0.);
+                                SendTrajectoryBroadastingRequest(request);
+                                ros::Duration(2.0).sleep();
 
+                                request = CreateBroadcastRequest(1., 0.);
+                                SendTrajectoryBroadastingRequest(request);
+                                ros::Duration(2.0).sleep();
 
-                request = CreateBroadcastRequest(1., 0.);
-                SendTrajectoryBroadastingRequest(request);
-                ros::Duration(2.0).sleep();
-
-                request = CreateBroadcastRequest(3., 0.);
-                SendTrajectoryBroadastingRequest(request);
+                                request = CreateBroadcastRequest(3., 0.);
+                                SendTrajectoryBroadastingRequest(request);
 
                 break;
             }

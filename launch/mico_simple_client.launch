@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+        <rosparam command="load" file="$(find nw_mico_client)/config/mico_simple_client.yaml" />
+	<node name="mico_simple_move_client" pkg="nw_mico_client" type="nw_mico_simple_move_client">        
+        </node>
+</launch>

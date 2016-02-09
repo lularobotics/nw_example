@@ -1,0 +1,29 @@
+
+q_init: [0., 0., 0., 0., 0., 0., 0.69, 0.69]
+joint_state_topic: /robot_joint_state
+trajectory_joint_state_topic: /trajectory_joint_state
+
+x_target_x: 0.3
+x_target_y: 0.5
+x_target_z: 0.0
+
+sphere_obstacle_constraint_csv: "0.0,0.5,0.1,0.15" 
+sphere_obstacle_frame: "root"
+
+#approach_constraint_csv: ""
+#approach_constraint_csv: "0.5,1.,0."
+approach_constraint_csv: "0.,1.,0."
+
+#obstacle_linearization_constraint_csv: "0.0,0.0,0.1,0.5"
+#obstacle_linearization_constraint_csv: ""
+obstacle_linearization_constraint_csv: "0.0,0.5,0.3,0.5"
+
+passthrough_constraint_csv: ""
+#passthrough_constraint_csv: "0.0,0.35,0.1,0.001,0.5"
+
+use_upright_orientation_constraint: true 
+#use_upright_orientation_constraint: false 
+
+#use_upright_orientation_constraint_end_only: true
+use_upright_orientation_constraint_end_only: false
+

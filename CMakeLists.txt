@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES nw_mico_client
+  LIBRARIES nw_mico_client
   CATKIN_DEPENDS
     actionlib
     actionlib_msgs
@@ -120,42 +120,57 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-# include_directories(include)
 include_directories(
+  src
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(nw_mico_client
-#   src/${PROJECT_NAME}/nw_mico_client.cpp
-# )
+### NW Mico Client Lib
+#add_library(nw_mico_client
+#  src/${PROJECT_NAME}/simple_move_client.h
+#  src/${PROJECT_NAME}/simple_move_client.cpp
+#  src/${PROJECT_NAME}/obstacle_bounds_publisher.h
+#  src/${PROJECT_NAME}/obstacle_bounds_publisher.cpp
+#)
 
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(nw_mico_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(
+#  nw_mico_client
+#  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+#  ${catkin_EXPORTED_TARGETS}
+#)
 
-## Declare a C++ executable
-add_executable(nw_mico_simple_move_client src/nw_mico_simple_move_client_main.cpp)
+#target_link_libraries(nw_mico_client
+#  ${catkin_LIBRARIES}
+#)
 
 
-## Add cmake target dependencies of the executable
-## same as for the library above
-add_dependencies(nw_mico_simple_move_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-## Specify libraries to link a library or executable target against
+# Mico simple client example
+add_executable(nw_mico_simple_move_client
+    src/${PROJECT_NAME}/nw_mico_simple_move_client_main.cpp
+)
+add_dependencies(
+    nw_mico_simple_move_client
+    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS}
+)
 target_link_libraries(nw_mico_simple_move_client
   ${catkin_LIBRARIES}
 )
 
 
-add_executable(nw_obstacle_publisher src/nw_obstacle_publisher_main.cpp)
-target_link_libraries(nw_obstacle_publisher
+# Mico simple client example
+add_executable(nw_echo_joint_state_publisher
+    src/${PROJECT_NAME}/nw_echo_joint_state_publisher_main.cpp
+)
+add_dependencies(
+    nw_echo_joint_state_publisher
+    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS}
+)
+target_link_libraries(nw_echo_joint_state_publisher
   ${catkin_LIBRARIES}
 )
+
 
 #############
 ## Install ##
