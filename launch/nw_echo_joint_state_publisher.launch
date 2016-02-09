@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <node name="nw_echo_joint_state_publisher" pkg="nw_mico_client" type="nw_echo_joint_state_publisher" output="screen"/> 
+</launch>
