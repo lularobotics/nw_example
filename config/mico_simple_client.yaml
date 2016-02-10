@@ -14,12 +14,12 @@ sphere_obstacle_frame: "root"
 #approach_constraint_csv: "0.5,1.,0."
 approach_constraint_csv: "0.,1.,0."
 
-#obstacle_linearization_constraint_csv: "0.0,0.0,0.1,0.5"
+obstacle_linearization_constraint_csv: "0.0,0.0,0.1,0.5"
 #obstacle_linearization_constraint_csv: ""
-obstacle_linearization_constraint_csv: "0.0,0.5,0.3,0.5"
+#obstacle_linearization_constraint_csv: "0.0,0.5,0.3,0.5"
 
-passthrough_constraint_csv: ""
-#passthrough_constraint_csv: "0.0,0.35,0.1,0.001,0.5"
+#passthrough_constraint_csv: ""
+passthrough_constraint_csv: "0.0,0.35,0.1,0.001,0.5"
 
 use_upright_orientation_constraint: true 
 #use_upright_orientation_constraint: false 

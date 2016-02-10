@@ -6,7 +6,8 @@
 
 // RieMO move action
 #include <riemo_move_action/PlanAction.h>
-#include <riemo_move_action/BroadcastTrajectoryAction.h>
+// RieMO move service
+#include <riemo_move_action/BroadcastTrajectory.h>
 #include <riemo_move_action/QueryTrajectory.h>
 
 /* ========================================================================== */
@@ -23,21 +24,18 @@ public:
     typedef actionlib::SimpleActionClient<riemo_move_action::PlanAction>
         PlanningClient;
 
-    typedef actionlib::SimpleActionClient<
-        riemo_move_action::BroadcastTrajectoryAction> BroadcastClient;
-
 public:
     SimpleMoveRobotClient()
         : planning_client_(riemo_move_action::PlanGoal::DEFAULT_ACTION_NAME,
-                           true),
-          broadcasting_client_(
-              riemo_move_action::BroadcastTrajectoryGoal::DEFAULT_ACTION_NAME,
-              true)
+                           true)
     {
         ros::NodeHandle nh;
         trajectory_query_client_ = nh.serviceClient<
             riemo_move_action::QueryTrajectory>(
             riemo_move_action::QueryTrajectory::Request::DEFAULT_SERVICE_NAME);
+        broadcast_trajectory_client_ = nh.serviceClient<
+            riemo_move_action::BroadcastTrajectory>(
+            riemo_move_action::BroadcastTrajectory::Request::DEFAULT_SERVICE_NAME);
     }
 
     void Run()
@@ -50,8 +48,8 @@ public:
         // nh.setParam("/sphere_obstacle_frame_id", "root");
 
         // create and send a planning request
-        riemo_move_action::PlanGoal goal = CreatePlanningRequest();
-        SendMotionPlanningRequest(goal);
+        riemo_move_action::PlanGoal request = CreatePlanningRequest();
+        SendMotionPlanningRequest(request);
 
         while (ros::ok())
         {
@@ -93,11 +91,11 @@ public:
         return goal;
     }
 
-    riemo_move_action::BroadcastTrajectoryGoal CreateBroadcastRequest(
+    riemo_move_action::BroadcastTrajectory::Request CreateBroadcastRequest(
         double dilation_factor,
         double policy_execution_start_time)
     {
-        riemo_move_action::BroadcastTrajectoryGoal goal;
+        riemo_move_action::BroadcastTrajectory::Request goal;
         goal.trajectory_timing.dilation_factor = dilation_factor;
         goal.trajectory_timing.policy_execution_start_time =
             policy_execution_start_time;
@@ -116,17 +114,20 @@ public:
             boost::bind(&SimpleMoveRobotClient::PlanningStartedCallback, this));
     }
 
-    void SendTrajectoryBroadastingRequest(
-        const riemo_move_action::BroadcastTrajectoryGoal& goal)
+    riemo_move_action::BroadcastTrajectory::Response SendTrajectoryBroadastingRequest(
+        const riemo_move_action::BroadcastTrajectory::Request& request)
     {
         ROS_INFO("Sending trajectory broadcasting request ...");
 
-        broadcasting_client_.sendGoal(
-            goal,
-            boost::bind(
-                &SimpleMoveRobotClient::BroadcastDoneCallback, this, _1, _2),
-            boost::bind(&SimpleMoveRobotClient::BroadcastStartedCallback,
-                        this));
+        riemo_move_action::BroadcastTrajectory srv;
+        srv.request = request;
+
+        if (!broadcast_trajectory_client_.call(srv))
+        {
+            ROS_ERROR("Failed to send broadcast trajectory request");
+        }
+
+        return srv.response;
     }
 
     void WaitForServer()
@@ -141,11 +142,6 @@ public:
         ROS_INFO("Server response: planning started");
     }
 
-    void BroadcastStartedCallback()
-    {
-        ROS_INFO("Server response: broadcasting trajectory ...");
-    }
-
     void PlanningDoneCallback(
         const actionlib::SimpleClientGoalState& goal_state,
         const riemo_move_action::PlanResultConstPtr& result)
@@ -154,46 +150,41 @@ public:
         {
             case actionlib::SimpleClientGoalState::SUCCEEDED:
             {
+                ros::Time start_time = ros::Time::now();
+
                 ROS_INFO("Server response: planning done");
                 ROS_INFO("Requesting trajectory broadcast...");
+
                 double dilation_factor = 1.0;
                 double policy_execution_start_time = 0.0;
-                riemo_move_action::BroadcastTrajectoryGoal request =
+
+                riemo_move_action::BroadcastTrajectory::Request request;
+                request =
                     CreateBroadcastRequest(dilation_factor,
                                            policy_execution_start_time);
 
+                ROS_INFO("move");
                 SendTrajectoryBroadastingRequest(request);
-                                ros::Duration(2.0).sleep();
+                ros::Duration(2.0).sleep();
 
-                                request = CreateBroadcastRequest(100., 0.);
-                                SendTrajectoryBroadastingRequest(request);
-                                ros::Duration(2.0).sleep();
+//                ROS_INFO("slow down");
+//                request = CreateBroadcastRequest(
+//                    4., ros::Time::now().toSec() - start_time.toSec());
+//                SendTrajectoryBroadastingRequest(request);
+//                ros::Duration(2.0).sleep();
 
-                                request = CreateBroadcastRequest(1., 0.);
-                                SendTrajectoryBroadastingRequest(request);
-                                ros::Duration(2.0).sleep();
+//                ROS_INFO("speed up");
+//                request = CreateBroadcastRequest(
+//                    1., ros::Time::now().toSec() - start_time.toSec());
+//                SendTrajectoryBroadastingRequest(request);
+//                ros::Duration(2.0).sleep();
 
-                                request = CreateBroadcastRequest(3., 0.);
-                                SendTrajectoryBroadastingRequest(request);
-
-                break;
-            }
-            default:
-                ROS_WARN("%s", goal_state.toString().c_str());
-                break;
-        }
-    }
-
-    void BroadcastDoneCallback(
-        const actionlib::SimpleClientGoalState& goal_state,
-        const riemo_move_action::BroadcastTrajectoryResultConstPtr& result)
-    {
-        switch (goal_state.state_)
-        {
-            case actionlib::SimpleClientGoalState::SUCCEEDED:
-            {
-                ROS_INFO("Server response: broadcasting ended");
+//                ROS_INFO("slow down again");
+//                request = CreateBroadcastRequest(
+//                    3., ros::Time::now().toSec() - start_time.toSec());
+//                SendTrajectoryBroadastingRequest(request);
                 ros::shutdown();
+
                 break;
             }
             default:
@@ -204,8 +195,8 @@ public:
 
 public:
     PlanningClient planning_client_;
-    BroadcastClient broadcasting_client_;
     ros::ServiceClient trajectory_query_client_;
+    ros::ServiceClient broadcast_trajectory_client_;
 };
 
 /* ========================================================================== */
