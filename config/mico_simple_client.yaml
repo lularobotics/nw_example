@@ -3,7 +3,7 @@ q_init: [0., 0., 0., 0., 0., 0., 0.69, 0.69]
 joint_state_topic: /robot_joint_state
 trajectory_joint_state_topic: /trajectory_joint_state
 
-x_target_x: 0.3
+x_target_x: -0.3
 x_target_y: 0.5
 x_target_z: 0.0
 
