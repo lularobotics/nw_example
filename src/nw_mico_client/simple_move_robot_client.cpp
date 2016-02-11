@@ -140,27 +140,27 @@ void SimpleMoveRobotClient::PlanningDoneCallback(
 
             ROS_INFO("move");
             SendTrajectoryBroadastingRequest(request);
-            ros::Duration(2.0).sleep();
+//            ros::Duration(2.0).sleep();
 
-            //                ROS_INFO("slow down");
-            //                request = CreateBroadcastRequest(
-            //                    4., ros::Time::now().toSec() -
-            //                    start_time.toSec());
-            //                SendTrajectoryBroadastingRequest(request);
-            //                ros::Duration(2.0).sleep();
+//            ROS_INFO("slow down");
+//            request = CreateBroadcastRequest(
+//                4., ros::Time::now().toSec() -
+//                start_time.toSec());
+//            SendTrajectoryBroadastingRequest(request);
+//            ros::Duration(2.0).sleep();
 
-            //                ROS_INFO("speed up");
-            //                request = CreateBroadcastRequest(
-            //                    1., ros::Time::now().toSec() -
-            //                    start_time.toSec());
-            //                SendTrajectoryBroadastingRequest(request);
-            //                ros::Duration(2.0).sleep();
+//            ROS_INFO("speed up");
+//            request = CreateBroadcastRequest(
+//                1., ros::Time::now().toSec() -
+//                start_time.toSec());
+//            SendTrajectoryBroadastingRequest(request);
+//            ros::Duration(2.0).sleep();
 
-            //                ROS_INFO("slow down again");
-            //                request = CreateBroadcastRequest(
-            //                    3., ros::Time::now().toSec() -
-            //                    start_time.toSec());
-            //                SendTrajectoryBroadastingRequest(request);
+//            ROS_INFO("slow down again");
+//            request = CreateBroadcastRequest(
+//                3., ros::Time::now().toSec() -
+//                start_time.toSec());
+//            SendTrajectoryBroadastingRequest(request);
             ros::shutdown();
 
             break;

@@ -1,5 +1,4 @@
 
-// ROS
 #include <ros/ros.h>
 
 #include "simple_move_robot_client.h"

@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+USE_UPRIGHT_ORIENTATION_CONSTRAINT=true
+USE_UPRIGHT_ORIENTATION_CONSTRAINT_END_ONLY=false
+SPHERE_OBSTACLE_CONSTRAINT_CSV=0.0,0.5,0.1,0.15
+OBSTACLE_LINEARIZATION_CONSTRAINT_CSV=0.0,0.5,0.3,0.5
+
+source ./run_riemo_move_mico_demo.sh `./left_goal`
+source ./run_riemo_move_mico_demo.sh `./right_goal`
