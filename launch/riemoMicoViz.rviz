@@ -8,9 +8,7 @@ Panels:
         - /Status1
         - /RobotModel1
         - /RobotModel1/Links1
-        - /RobotModel1/Links1/mico_link_21
-        - /RobotModel1/Links1/mico_link_51
-        - /RobotModel1/Links1/mico_link_base1
+        - /RobotModel1/Links1/mico_end_effector1
         - /EllipsoidMarkerArray1
       Splitter Ratio: 0.582677
     Tree Height: 261
@@ -90,7 +88,7 @@ Visualization Manager:
           Show Trail: false
         mico_end_effector:
           Alpha: 1
-          Show Axes: false
+          Show Axes: true
           Show Trail: false
         mico_link_1:
           Alpha: 1
@@ -99,7 +97,7 @@ Visualization Manager:
           Value: true
         mico_link_2:
           Alpha: 1
-          Show Axes: true
+          Show Axes: false
           Show Trail: false
           Value: true
         mico_link_3:
@@ -114,7 +112,7 @@ Visualization Manager:
           Value: true
         mico_link_5:
           Alpha: 1
-          Show Axes: true
+          Show Axes: false
           Show Trail: false
           Value: true
         mico_link_base:
@@ -143,7 +141,7 @@ Visualization Manager:
       Marker Topic: ellipsoid_marker_array
       Name: EllipsoidMarkerArray
       Namespaces:
-        basic_shapes: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -182,10 +180,10 @@ Visualization Manager:
         Z: 0.106086
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.664796
+      Pitch: 0.594796
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.33909
+      Yaw: 1.01409
     Saved: ~
 Window Geometry:
   Displays:
@@ -203,5 +201,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 459
+  X: 449
   Y: 14
