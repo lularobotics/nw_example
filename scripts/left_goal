@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-echo "x_target_x:=-.22 x_target_y:=.55 x_target_z:=.1"
+echo "-.22 .55 .1"

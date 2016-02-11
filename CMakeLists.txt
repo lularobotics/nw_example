@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(nw_mico_client)
 
+# Use C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
@@ -37,17 +40,17 @@ include_directories(
 )
 
 ## NW Mico Client Lib
-add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/simple_move_robot_client.h
-  src/${PROJECT_NAME}/simple_move_robot_client.cpp
-)
+#add_library(${PROJECT_NAME}
+#  src/${PROJECT_NAME}/simple_move_robot_client.h
+#  src/${PROJECT_NAME}/simple_move_robot_client.cpp
+#)
 add_dependencies(
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )
-target_link_libraries(nw_mico_client
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(nw_mico_client
+#  ${catkin_LIBRARIES}
+#)
 
 # Mico simple client example
 add_executable(nw_mico_simple_move_client
@@ -56,9 +59,10 @@ add_executable(nw_mico_simple_move_client
 add_dependencies(
     ${${PROJECT_NAME}_EXPORTED_TARGETS}
     ${catkin_EXPORTED_TARGETS}
+    riemo_move_action_generate_messages_cpp
 )
 target_link_libraries(nw_mico_simple_move_client
-  ${PROJECT_NAME}
+#  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 

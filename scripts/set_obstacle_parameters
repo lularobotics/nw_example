@@ -1,0 +1,30 @@
+#!/bin/bash -e
+#
+# Usage: ./set_obstacle_parameters <x> <y> <z> <radius>
+#        ./set_obstacle_parameters <clear>
+
+error_usage() {
+  echo "ERROR - Invalid params: Usage "
+  echo "./set_obstacle_parameters <x> <y> <z> <radius>"
+  echo "./set_obstacle_parameters <clear>"
+}
+
+# Handle case ./set_obstacle_parameters <clear>
+if [ "$#" -eq 1 ]; then
+  # Empty string
+  if [ "$1" == "clear" ]; then
+    rosparam set /sphere_obstacle_constraint_csv ""
+    exit
+  else
+    error_usage
+    exit 1
+  fi
+fi
+
+# Handle case  ./set_obstacle_parameters <x> <y> <z> <radius>
+if [ "$#" -ne 4 ]; then
+  error_usage
+  exit 1
+fi
+
+rosparam set /sphere_obstacle_constraint_csv $1,$2,$3,$4

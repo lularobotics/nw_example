@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-     This version does sets the sphere_obstacle_constraint_csv parameter as
-     expected in the demo sequence.
+     This version does not set the sphere_obstacle_constraint_csv parameter and uses 
+     the version already explicitly set in the parameter server
 -->
 
 <launch>
@@ -21,7 +21,6 @@
 	<param name="use_upright_orientation_constraint" value="$(arg use_upright_orientation_constraint)" />
 	<param name="use_upright_orientation_constraint_end_only" value="$(arg use_upright_orientation_constraint_end_only)" />
 	<param name="approach_constraint_csv" value="$(arg approach_constraint_csv)" />
-	<param name="sphere_obstacle_constraint_csv" value="$(arg sphere_obstacle_constraint_csv)" />
 	<param name="passthrough_constraint_csv" value="$(arg passthrough_constraint_csv)" />
 	<param name="obstacle_linearization_constraint_csv" value="$(arg obstacle_linearization_constraint_csv)" />
   <node name="mico_simple_move_client" pkg="nw_mico_client" type="nw_mico_simple_move_client" output="screen">		
