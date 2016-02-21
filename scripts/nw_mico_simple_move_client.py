@@ -59,9 +59,6 @@ def nw_mico_simple_move_client_main():
 
   # Setup a client to query a trajectory once planning is complete and publish
   # it to the /joint_trajectory topic immediately on the server side.
-  # Alternatively, one can use the riemo_move_action::QueryTrajectory service
-  # with the same calling API to receive the trajectory in the service response
-  # rather than performing a server-side publish.
   planning_client = actionlib.SimpleActionClient(
     PlanGoal.DEFAULT_ACTION_NAME, PlanAction)
   rospy.loginfo("Waiting for planning server")
