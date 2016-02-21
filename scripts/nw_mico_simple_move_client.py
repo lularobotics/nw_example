@@ -67,7 +67,7 @@ def nw_mico_simple_move_client_main():
   rospy.loginfo("Waiting for planning server")
   planning_client.wait_for_server()
 
-  # Setup the planning client that will perform the planning request.
+  # Setup the broadcast request service
   broadcast_trajectory = rospy.ServiceProxy(
     BroadcastTrajectoryRequest.DEFAULT_SERVICE_NAME, BroadcastTrajectory)
   rospy.loginfo("Waiting for trajectory broadcasting service")
@@ -85,11 +85,7 @@ def nw_mico_simple_move_client_main():
 
   rospy.loginfo("Planning done and succeded.")
 
-  # Send the planning request and wait for planning to complete. Alternatively,
-  # rather than waiting here, one can specify a "planning done" callback that
-  # will be called once planning has completed. In that case, planning is
-  # performed asynchronously, and execution continues immediately after the
-  # request is sent.
+  # Send the trajectory broadcast request and wait fir the execution to finish. 
   rospy.loginfo("Sending trajectory broadcasting request")
   time_from_start = 0.0
   dilation_factor = 1.0
@@ -99,7 +95,7 @@ def nw_mico_simple_move_client_main():
   rospy.loginfo("Waiting till trajectory has been executed.")
   rospy.sleep(srv_result.trajectory_duration);
 
-  rospy.loginfo("Exciting plannign client.")
+  rospy.loginfo("Exciting planning client.")
 
 if __name__ == "__main__":
   nw_mico_simple_move_client_main()
