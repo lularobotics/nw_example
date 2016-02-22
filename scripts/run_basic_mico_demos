@@ -1,0 +1,40 @@
+#!/bin/bash -e
+#
+# Executes all demos
+
+arr_x_targets=(
+  ".55 .22 .1"
+  ".55 -.22 .1"
+)
+
+CONFIG_PKG="nw_mico_client"
+CONFIG_PKG_DIR=`rospack find $CONFIG_PKG`
+
+# Place the obstacle at the standard location.
+rosrun nw_mico_client set_obstacle_parameters .5 .0 .1 .15
+
+for ((i=1;i<=18;i++)); do
+  if [ "$i" == "1" ]; then
+    # This is always reset to the empty string after the program is run.
+    Q_INIT_CSV="-0.614159,0,-0.400798,1.83805,-1.63068,1.42643,0.623563,0.623563"
+  fi
+
+  CONFIG=config/mico_move_config.yaml
+  TASK_CONFIG=config/demos/d_${i}.yaml
+  echo
+  echo "==================================================================="
+  echo "Task config: $TASK_CONFIG"
+  echo "==================================================================="
+  echo
+  echo "--------------------------------------------------------"
+  echo "Task config parameters:"
+  cat $CONFIG_PKG_DIR/$TASK_CONFIG
+  echo "--------------------------------------------------------"
+  echo
+  sleep 2
+  for X_TARGET in "${arr_x_targets[@]}"; do
+    echo "Moving to target: $X_TARGET_CSV"
+    rosrun nw_mico_client nw_mico_simple_move_client $TASK_CONFIG $X_TARGET
+    Q_INIT_CSV=""
+  done
+done
