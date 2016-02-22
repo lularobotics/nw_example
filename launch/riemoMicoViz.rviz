@@ -141,7 +141,7 @@ Visualization Manager:
       Marker Topic: ellipsoid_marker_array
       Name: EllipsoidMarkerArray
       Namespaces:
-        {}
+        basic_shapes: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -175,15 +175,15 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.0511194
-        Y: 0.20647
-        Z: 0.106086
+        X: 0.0253633
+        Y: 0.0453298
+        Z: -0.0197356
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.594796
+      Pitch: 0.189796
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.01409
+      Yaw: 6.14231
     Saved: ~
 Window Geometry:
   Displays:
@@ -201,5 +201,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 449
+  X: 439
   Y: 14

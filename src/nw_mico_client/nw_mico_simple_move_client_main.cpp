@@ -1,5 +1,7 @@
 // ROS
 #include <ros/ros.h>
+#include <ros/package.h>
+#include <yaml-cpp/yaml.h>
 #include <actionlib/client/simple_action_client.h>
 
 // RieMO move action
@@ -9,11 +11,23 @@
 #include <riemo_move_action/BroadcastTrajectory.h>
 #include <riemo_move_action/QueryTrajectory.h>
 
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::flush;
+
 // Uncomment to play around with modulating the speed.
 //#define MODULATE_SPEED
 
 typedef actionlib::SimpleActionClient<riemo_move_action::PlanAction>
     PlanningClient;
+
+template <class T>
+T Get(const YAML::Node& node, const std::string& name, const T& default_value) {
+  auto field = node[name];
+  if (!field) return default_value;
+  return field.as<T>();
+}
 
 // Setup and a plan "goal". "Goal" is somewhat of a misnomer, but you can think
 // of it as the "goal" os optimization, i.e. the constraints and objective. In
@@ -22,26 +36,36 @@ typedef actionlib::SimpleActionClient<riemo_move_action::PlanAction>
 //
 // This method pulls the parameters from the ROS parameter server. Make sure
 // those values are set property.
-riemo_move_action::PlanGoal CreatePlanningRequest() {
+riemo_move_action::PlanGoal CreatePlanningRequest(
+    double target_x,
+    double target_y,
+    double target_z,
+    const YAML::Node& task_config) {
   riemo_move_action::PlanGoal goal;
-  ros::NodeHandle nh;
 
-  // set target
-  nh.getParam("/x_target_x", goal.target.x);
-  nh.getParam("/x_target_y", goal.target.y);
-  nh.getParam("/x_target_z", goal.target.z);
+  goal.target.x = target_x;
+  goal.target.y = target_y;
+  goal.target.z = target_z;
 
-  // set constraints
-  nh.getParam("/approach_constraint_csv", goal.approach_constraint_csv);
-  nh.getParam("/obstacle_linearization_constraint_csv",
-              goal.obstacle_linearization_constraint_csv);
-  nh.getParam("/passthrough_constraint_csv", goal.passthrough_constraint_csv);
+  // Set approach parameters
+  goal.approach_constraint_csv =
+      Get<std::string>(task_config, "approach_constraint_csv", "");
+  goal.shape_approach = Get<bool>(task_config, "shape_approach", false);
 
-  bool temp;
-  nh.getParam("/use_upright_orientation_constraint", temp);
-  goal.use_upright_orientation_constraint = temp;
-  nh.getParam("/use_upright_orientation_constraint_end_only", temp);
-  goal.use_upright_orientation_constraint_end_only = temp;
+  // Set upright orientation constraint parameters
+  goal.upright_constraint_direction_csv = Get<std::string>(
+      task_config, "upright_constraint_direction_csv", "0.,0.,1.");
+  goal.use_upright_orientation_constraint =
+      Get<bool>(task_config, "use_upright_orientation_constraint", false);
+  goal.use_upright_orientation_constraint_end_only = Get<bool>(
+      task_config, "use_upright_orientation_constraint_end_only", false);
+
+  // Set behavioral constraints
+  goal.behavioral_type = Get<std::string>(task_config, "behavioral_type", "");
+  goal.obstacle_linearization_constraint_csv =
+      Get<std::string>(task_config, "obstacle_linearization_constraint_csv", "");
+  goal.passthrough_constraint_csv =
+      Get<std::string>(task_config, "passthrough_constraint_csv", "");
 
   return goal;
 }
@@ -56,12 +80,38 @@ riemo_move_action::BroadcastTrajectory::Request CreateBroadcastRequest(
   return goal;
 }
 
+void PrintUsage() {
+  cout << "nw_mico_simple_move_client <task_config> <x> <y> <z>" << endl;
+  cout << "  <task_config> : yaml config specifying the motion task parameters." << endl;
+  cout << "  (<x>, <y>, <z>) : specifies the target location." << endl;
+}
+
 int main(int argc, char **argv) {
   ros::init(argc, argv, "nw_mico_simple_move_client");
 
   ros::NodeHandle nh;
   ros::AsyncSpinner spinner(1);
   spinner.start();
+
+  if (argc != 5) {
+    cout << "ERROR -- invalid number of arguments." << endl;
+    PrintUsage();
+    return 1;
+  }
+
+  // Parse the arguments.
+  std::string rel_task_config = argv[1];
+  double target_x = std::stod(argv[2]);
+  double target_y = std::stod(argv[3]);
+  double target_z = std::stod(argv[4]);
+  cout << "x_target: (" << target_x << ", " << target_y << ", " << target_z
+       << ")" << endl;
+
+  // Load the yaml task config.
+  auto task_config_path = ros::package::getPath("nw_mico_client") +
+                          ((rel_task_config[0] == '/') ? "" : "/") +
+                          rel_task_config;
+  auto task_config = YAML::LoadFile(task_config_path);
 
   // Setup a client to query a trajectory once planning is complete and publish
   // it to the /joint_trajectory topic immediately on the server side.
@@ -83,7 +133,9 @@ int main(int argc, char **argv) {
   // performed asynchronously, and execution continues immediately after the
   // request is sent.
   ROS_INFO("Sending motion planning request ...");
-  auto final_state = planning_client.sendGoalAndWait(CreatePlanningRequest());
+  auto planning_request =
+      CreatePlanningRequest(target_x, target_y, target_z, task_config);
+  auto final_state = planning_client.sendGoalAndWait(planning_request);
   if (final_state.state_ != actionlib::SimpleClientGoalState::SUCCEEDED) {
     ROS_ERROR("Planning failed.");
     return 1;

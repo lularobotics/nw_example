@@ -9,6 +9,7 @@
   <arg name="x_target_x" />
   <arg name="x_target_y" />
   <arg name="x_target_z" />
+  <arg name="behavioral_type" default="" />
   <arg name="use_upright_orientation_constraint" default="false" />
   <arg name="use_upright_orientation_constraint_end_only" default="false" />
   <arg name="approach_constraint_csv" default="" />

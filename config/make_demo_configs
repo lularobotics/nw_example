@@ -1,0 +1,32 @@
+#!/bin/bash -e
+
+arr_upright=(
+  "use_upright_orientation_constraint: true\nuse_upright_orientation_constraint_end_only: false\n"
+  "use_upright_orientation_constraint: false\nuse_upright_orientation_constraint_end_only: true\n"
+  "use_upright_orientation_constraint: false\nuse_upright_orientation_constraint_end_only: false\n"
+)
+arr_approach=(
+  "approach_constraint_csv: 1.,0.,0.\nshape_approach: true\n"
+  "shape_approach: false"
+)
+arr_geom_types=(
+  "" 
+  "behavioral_type: around\n" 
+  "behavioral_type: over\n" 
+)
+
+i=1
+for u in "${arr_upright[@]}"
+do
+  for a in "${arr_approach[@]}"
+  do
+    for t in "${arr_geom_types[@]}"
+    do
+      str="upright_constraint_direction_csv: 0.,0.,-1.\n$t$u$a"
+      printf "$str" > demos/d_${i}.yaml
+      printf "...................................................\n"
+      printf "$str\n"
+      ((i++))
+    done
+  done
+done

@@ -1,0 +1,16 @@
+#------------------------------------------------------------
+# Problem control parameters
+
+#behavioral_type: over
+#behavioral_type: around
+
+upright_constraint_direction_csv: 0.,0.,-1.
+use_upright_orientation_constraint: false
+use_upright_orientation_constraint_end_only: true
+approach_constraint_csv: 1.,0.,0.
+shape_approach: true
+
+#obstacle_linearization_constraint_csv: 0.,0.,1.,.5
+#obstacle_linearization_constraint_csv: 0.,-1.,0.,.5
+#passthrough_constraint_csv: .3,.3,.1,.0001,.5
+#passthrough_constraint_csv: -.22,.35,.1,.001,.55

@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+#
+# Note: This client is implemented for an older version of the system. It's a
+# good reference for how to contruct action calls in python, but it cannot be
+# used as is with the current system.
 
 import sys
 import rospy

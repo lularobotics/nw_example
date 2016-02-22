@@ -1,0 +1,69 @@
+# RieMO problem
+apollo_riemo_robot_type: basic
+robot_package_name: nw_riemo_robots
+riemo_json_config: riemo_robot_mico.json
+T: 30
+dt: .2
+dilation_factors_csv: .5
+dilation_times_csv: -1.
+policy_execution_start_time: 0.
+
+# Optimization
+inner_loop_optimizer_type: newton_adaptive_step_size
+interior_point_iterations: 1
+barrier_reduction_scalar: .3
+maximum_outer_loop_iters: 25
+maximum_inner_loop_iters: 20
+gradient_norm_threshold: .01
+init_ss: .5
+max_ss: 1.
+min_ss: 1e-6
+lambda: .01
+mu: 100.
+mu_inflation_factor: 1.
+max_abs_lagrange_multiplier: 1000
+x_convergence_epsilon: .01
+inequality_constraint_convergence_epsilon: .01
+equality_constraint_convergence_epsilon: .01
+verbose: true
+
+# RieMO core params
+cspace_vel_scalar: 1.
+cspace_acc_scalar: 10.
+cspace_init_vel_scalar: 100.
+cspace_init_acc_scalar: 3000.
+task_vel_scalar: 10.
+task_acc_scalar: 1000.
+joint_potential_scalar: 0.
+
+# Objective params
+posture_scalar: 10.
+terminal_term_scalar: 100000.
+initial_task_velocity_term_scalar: 500.
+terminal_task_velocity_term_scalar: 2000.
+vertical_potential_scalar: 0.
+base_heuristic_potential_scalar: .0
+cost_gradient_metric_scalar: 10000.
+cost_gradient_metric_alpha: 1.
+joint_barrier_scalar: .1
+joint_barrier_margin: .0
+obstacle_barrier_scalar: 1.
+obstacle_barrier_margin: .0
+grasp_hand_open_scalar: 100.
+include_floor_constraint: true
+
+approach_standoff_distance: .1
+approach_standoff_time: 2.
+approach_velocity_scalar: 100.
+
+sphere_obstacle_constraint_csv: .5,0,.1,.15
+vel_thresh: 10.
+accel_thresh: 20.
+
+# LQR params
+control_dt: .01
+action_gain: 5.
+intermediate_position_gains_csv: 10000,100
+intermediate_velocity_gains_csv: 10000,100
+terminal_position_gains_csv: 10000,100
+terminal_velocity_gains_csv: 10000,100
