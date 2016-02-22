@@ -80,9 +80,9 @@ def nw_mico_simple_move_client_main():
     rospy.logerr("Planning failed") 
     return
 
-  rospy.loginfo("Planning done and succeded.")
+  rospy.loginfo("Planning done and succeeded.")
 
-  # Send the trajectory broadcast request and wait fir the execution to finish. 
+  # Send the trajectory broadcast request and wait for the execution to finish. 
   rospy.loginfo("Sending trajectory broadcasting request")
   time_from_start = 0.0
   dilation_factor = 1.0
