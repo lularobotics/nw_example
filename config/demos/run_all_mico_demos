@@ -16,6 +16,9 @@ arr_x_targets=(
 CONFIG_PKG="nw_mico_client"
 CONFIG_PKG_DIR=`rospack find $CONFIG_PKG`
 
+# Place the obstacle at the standard location.
+rosrun nw_mico_client set_obstacle_parameters .5 .0 .1 .15
+
 for ((i=1;i<=18;i++)); do
   if [ "$i" == "1" ]; then
     # This is always reset to the empty string after the program is run.
