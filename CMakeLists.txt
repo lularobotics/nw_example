@@ -7,12 +7,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
-  message_generation
   riemo_move_action
   roscpp
   roslib
   rospy
-  std_msgs
 )
 
 ###################################
@@ -25,12 +23,10 @@ catkin_package(
   CATKIN_DEPENDS
     actionlib
     actionlib_msgs
-    message_generation
     riemo_move_action
     roscpp
     roslib
     rospy
-    std_msgs
 )
 
 ###########
@@ -51,9 +47,8 @@ add_executable(nw_mico_simple_move_client
     src/${PROJECT_NAME}/nw_mico_simple_move_client_main.cpp
 )
 add_dependencies(
-    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    nw_mico_simple_move_client
     ${catkin_EXPORTED_TARGETS}
-    riemo_move_action_generate_messages_cpp
 )
 target_link_libraries(nw_mico_simple_move_client
   ${catkin_LIBRARIES}
