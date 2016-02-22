@@ -1,6 +1,6 @@
 upright_constraint_direction_csv: 0.,0.,-1.
 behavioral_type: over
 use_upright_orientation_constraint: false
-use_upright_orientation_constraint_end_only: true
+use_upright_orientation_constraint_end_only: false
 approach_constraint_csv: 1.,0.,0.
 shape_approach: true

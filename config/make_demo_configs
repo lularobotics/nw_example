@@ -1,14 +1,21 @@
 #!/bin/bash -e
 
-arr_upright=(
-  "use_upright_orientation_constraint: true\nuse_upright_orientation_constraint_end_only: false\n"
-  "use_upright_orientation_constraint: false\nuse_upright_orientation_constraint_end_only: true\n"
-  "use_upright_orientation_constraint: false\nuse_upright_orientation_constraint_end_only: false\n"
-)
+# Will perform all demos with approach shaping first, and then again without approach shaping.
 arr_approach=(
   "approach_constraint_csv: 1.,0.,0.\nshape_approach: true\n"
-  "shape_approach: false"
+  "shape_approach: false\n"
 )
+# For each of the shaping settings, it will start with the upright end-effector constraint 
+# applied only to the end so that it doesn't require the orientation from the start.
+# Progresses from requiring it at the end, to requiring it all the way through, to not
+# requiring it at all.
+arr_upright=(
+  "use_upright_orientation_constraint: false\nuse_upright_orientation_constraint_end_only: true\n"
+  "use_upright_orientation_constraint: true\nuse_upright_orientation_constraint_end_only: false\n"
+  "use_upright_orientation_constraint: false\nuse_upright_orientation_constraint_end_only: false\n"
+)
+# For each of the above combinations of settings, it first performs it without geometric
+# behavioral type, then with the "around" type, and finally with the "over" type.
 arr_geom_types=(
   "" 
   "behavioral_type: around\n" 
@@ -16,9 +23,9 @@ arr_geom_types=(
 )
 
 i=1
-for u in "${arr_upright[@]}"
+for a in "${arr_approach[@]}"
 do
-  for a in "${arr_approach[@]}"
+  for u in "${arr_upright[@]}"
   do
     for t in "${arr_geom_types[@]}"
     do

@@ -40,7 +40,7 @@ for ((i=1;i<=18;i++)); do
   sleep 2
   for X_TARGET in "${arr_x_targets[@]}"; do
     echo "Moving to target: $X_TARGET_CSV"
-    rosrun nw_mico_client nw_mico_simple_move_client $TASK_CONFIG $X_TARGET
+    rosrun nw_mico_client nw_mico_simple_move_client.py $TASK_CONFIG $X_TARGET
     Q_INIT_CSV=""
   done
 done
