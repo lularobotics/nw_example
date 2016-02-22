@@ -17,8 +17,7 @@ from geometry_msgs.msg import Point
 from riemo_move_action.srv import *
 from riemo_move_action.msg import *
 
-# This method pulls the parameters from the ROS parameter server. Make sure
-# those values are set property.
+# This method pulls the parameters from the task_config dict.
 def CreatePlanningRequest(target_x, target_y, target_z, task_config):
   goal = PlanGoal
 
