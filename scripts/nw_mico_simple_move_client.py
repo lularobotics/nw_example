@@ -160,7 +160,8 @@ def main(args):
   # Send the trajectory broadcast request and wait for the execution to finish. 
   rospy.loginfo("Sending trajectory broadcasting request")
   time_from_start = 0.0
-  dilation_factor = 1.0  # Play this this to speed up (<1) or slow down (>1) execution.
+  #dilation_factor = 1.0  # Play with this to speed up (<1) or slow down (>1) execution.
+  dilation_factor = .5
   timing = TrajectoryTiming(time_from_start, dilation_factor)
   srv_result = broadcast_trajectory(trajectory_timing=timing)
 
