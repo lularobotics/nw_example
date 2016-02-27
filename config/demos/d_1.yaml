@@ -1,5 +1,5 @@
 upright_constraint_direction_csv: 0.,0.,-1.
 use_upright_orientation_constraint: false
 use_upright_orientation_constraint_end_only: true
-approach_constraint_csv: 1.,0.,0.
+approach_constraint_csv: 0.,-1.,0.
 shape_approach: true

@@ -2,21 +2,30 @@
 #
 # Executes all demos
 
+# Use with kinova-ros urdf
+#arr_x_targets=(
+#  ".55 .22 .1"
+#  ".55 -.22 .1"
+#)
+
+# Use with NW/CMU urdf
 arr_x_targets=(
-  ".55 .22 .1"
-  ".55 -.22 .1"
+  ".22 -.55 .1"
+  "-.22 -.55 .1"
 )
+
 
 CONFIG_PKG="nw_mico_client"
 CONFIG_PKG_DIR=`rospack find $CONFIG_PKG`
 
 # Place the obstacle at the standard location.
-rosrun nw_mico_client set_obstacle_parameters .5 .0 .1 .15
+rosrun nw_mico_client set_obstacle_parameters 0. -.5 .1 .15
 
 for ((i=1;i<=18;i++)); do
   if [ "$i" == "1" ]; then
     # This is always reset to the empty string after the program is run.
-    Q_INIT_CSV="-0.614159,0,-0.400798,1.83805,-1.63068,1.42643,0.623563,0.623563"
+    #Q_INIT_CSV="-0.614159,0,-0.400798,1.83805,-1.63068,1.42643,0.623563,0.623563" # Use with kinova-ros urdf
+    Q_INIT_CSV="-1.14008  3.31725   2.9309 0.895853  1.66968 -2.87169 0.639584 0.638662"
   fi
 
   CONFIG=config/mico_move_config.yaml
