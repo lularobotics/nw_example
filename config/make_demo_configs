@@ -37,6 +37,9 @@ do
     for t in "${arr_geom_types[@]}"
     do
       str="upright_constraint_direction_csv: 0.,0.,-1.\n$t$u$a"
+      if [[ `echo $a | grep 'shape_approach: false'` != '' ]]; then
+        str="${str}pickup: true\nputdown: true\n"
+      fi
       printf "$str" > demos/d_${i}.yaml
       printf "...................................................\n"
       printf "$str\n"

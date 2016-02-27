@@ -3,3 +3,5 @@ behavioral_type: around
 use_upright_orientation_constraint: true
 use_upright_orientation_constraint_end_only: false
 shape_approach: false
+pickup: true
+putdown: true
