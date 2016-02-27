@@ -31,6 +31,8 @@ def CreatePlanningRequest(target_x, target_y, target_z, task_config):
   goal.target.z = float(target_z)
   goal.approach_constraint_csv = task_config['approach_constraint_csv']
   goal.shape_approach = bool(task_config['shape_approach'])
+  goal.pickup = bool(task_config['pickup'])
+  goal.putdown = bool(task_config['putdown'])
   goal.upright_constraint_direction_csv = task_config['upright_constraint_direction_csv']
   goal.use_upright_orientation_constraint = bool(
       task_config['use_upright_orientation_constraint'])
@@ -80,6 +82,8 @@ def PrintPlanningRequest(request):
     '  - target: (%s %s %s)\n' 
     '  - approach_constraint_csv: %s\n' 
     '  - shape_approach: %s\n'
+    '  - pickup: %s\n'
+    '  - putdown: %s\n'
     '  - upright_constraint_direction_csv: %s\n'
     '  - use_upright_orientation_constraint: %s\n'
     '  - use_upright_orientation_constraint_end_only: %s\n'
@@ -91,6 +95,8 @@ def PrintPlanningRequest(request):
       request.target.x, request.target.y, request.target.z, 
       request.approach_constraint_csv,
       request.shape_approach,
+      request.pickup,
+      request.putdown,
       request.upright_constraint_direction_csv,
       request.use_upright_orientation_constraint,
       request.use_upright_orientation_constraint_end_only,
@@ -127,6 +133,8 @@ def main(args):
   task_config = {
     'approach_constraint_csv' : '' ,
     'shape_approach' : False,
+    'pickup' : False,
+    'putdown' : False,
     'upright_constraint_direction_csv' : '0.,0.,1.',
     'use_upright_orientation_constraint' : False,
     'use_upright_orientation_constraint_end_only' : False, 
