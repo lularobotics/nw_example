@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #
-# Note: This client is identical to the c++ version and it can be used in the
-# same way.
+# Note: This client is new than the c++ version. It queries for the trajectory
+# and converts the finger joints values into command values before publishing
+# both it and the original "raw" trajectory to the /joint_trajectory and
+# /joint_trajectory_raw topics, respectively.
 
 import copy
 import sys
@@ -170,8 +172,6 @@ def main(args):
   #----------------------------------------------------------------------------
 
   # Setup the broadcast request service
-  #broadcast_trajectory = rospy.ServiceProxy(
-  #  BroadcastTrajectoryRequest.DEFAULT_SERVICE_NAME, BroadcastTrajectory)
   query_trajectory = rospy.ServiceProxy(
     QueryTrajectoryRequest.DEFAULT_SERVICE_NAME, QueryTrajectory)
   rospy.loginfo('Waiting for trajectory broadcasting service')
@@ -200,17 +200,18 @@ def main(args):
   # Send the trajectory broadcast request and wait for the execution to finish. 
   rospy.loginfo('Sending trajectory broadcasting request')
   time_from_start = 0.0
-  #dilation_factor = 1.0  # Play with this to speed up (<1) or slow down (>1) execution.
-  dilation_factor = .5
+  dilation_factor = 1.0  # Play with this to speed up (<1) or slow down (>1) execution.
   timing = TrajectoryTiming(time_from_start, dilation_factor)
-  #srv_result = broadcast_trajectory(trajectory_timing=timing)
   srv_result = query_trajectory(trajectory_timing=timing)
+
+  # Transform the trajectory to convert the finger jont values into commands in
+  # the range [0,6000].  Note the joint limit is set to .8 (the real max is
+  # 1.2), so the true range of possible commands ends up being [0,4000].
   transformed_trajectory = TransformFingerCommands(srv_result.trajectory, 6000.)
   trajectory_pub.publish(transformed_trajectory);
   raw_trajectory_pub.publish(srv_result.trajectory);
 
   rospy.loginfo('Waiting till trajectory has been executed.')
-  #rospy.sleep(srv_result.trajectory_duration);
   rospy.sleep(srv_result.trajectory.points[-1].time_from_start);
 
   rospy.loginfo('Exciting planning client.')

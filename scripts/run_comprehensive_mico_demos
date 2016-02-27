@@ -42,11 +42,6 @@ arr_x_targets=(
   "-.22 -.55 .1"
 )
 
-#arr_x_targets=(
-#  ".22 -.55 .1"
-#  ".4 -.4 .1"
-#)
-
 CONFIG_PKG="nw_mico_client"
 CONFIG_PKG_DIR=`rospack find $CONFIG_PKG`
 
@@ -55,13 +50,6 @@ CONFIG_PKG_DIR=`rospack find $CONFIG_PKG`
 rosrun nw_mico_client set_obstacle_parameters .0 -.5 .1 .15
 
 for ((i=1;i<=18;i++)); do
-#for ((i=2;i<=2;i++)); do
-#for ((i=17;i<=18;i++)); do
-  if [ "$i" == "1" ]; then
-    # This is always reset to the empty string after the program is run.
-    Q_INIT_CSV="-0.614159,0,-0.400798,1.83805,-1.63068,1.42643,0.623563,0.623563"
-  fi
-
   CONFIG=config/mico_move_config.yaml
   TASK_CONFIG=config/demos/d_${i}.yaml
   echo
@@ -79,6 +67,5 @@ for ((i=1;i<=18;i++)); do
     echo "Moving to target: $X_TARGET_CSV"
     echo "rosrun nw_mico_client nw_mico_simple_move_client.py $TASK_CONFIG $X_TARGET"
     rosrun nw_mico_client nw_mico_simple_move_client.py $TASK_CONFIG $X_TARGET
-    Q_INIT_CSV=""
   done
 done
