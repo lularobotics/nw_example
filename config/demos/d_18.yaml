@@ -1,4 +1,4 @@
-upright_constraint_direction_csv: 0.,0.,-1.
+upright_constraint_direction_csv: 0.,0.,1.
 behavioral_type: over
 use_upright_orientation_constraint: false
 use_upright_orientation_constraint_end_only: false

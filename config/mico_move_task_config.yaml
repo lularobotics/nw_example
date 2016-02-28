@@ -15,7 +15,7 @@ approach_constraint_csv: 0.,-1.,0.
 #approach_constraint_csv: -1.,0.,0.
 shape_approach: false
 pickup: false
-putdown: true
+putdown: false
 
 #obstacle_linearization_constraint_csv: 0.,0.,1.,.5
 #obstacle_linearization_constraint_csv: 0.,-1.,0.,.5
