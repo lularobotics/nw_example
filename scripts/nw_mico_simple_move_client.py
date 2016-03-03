@@ -194,8 +194,8 @@ def main(args):
   #trajectory_pub.publish(transformed_trajectory);
   #raw_trajectory_pub.publish(srv_result.trajectory);
 
-  #rospy.loginfo('Waiting till trajectory has been executed.')
-  #rospy.sleep(srv_result.trajectory.points[-1].time_from_start);
+  rospy.loginfo('Waiting till trajectory has been executed.')
+  rospy.sleep(srv_result.trajectory.points[-1].time_from_start);
 
   rospy.loginfo('Exiting planning client.')
 
