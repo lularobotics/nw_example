@@ -5,7 +5,6 @@
 # both it and the original "raw" trajectory to the /joint_trajectory and
 # /joint_trajectory_raw topics, respectively.
 
-import copy
 import sys
 import os
 import rospy
@@ -13,6 +12,8 @@ import rospkg
 import actionlib
 
 import yaml
+
+import trajectory_transform as tt
 
 from actionlib_msgs.msg import *
 from geometry_msgs.msg import Point
@@ -43,37 +44,6 @@ def CreatePlanningRequest(target_x, target_y, target_z, task_config):
   goal.passthrough_constraint_csv = task_config['passthrough_constraint_csv']
 
   return goal
-
-def GetJointIndex(trajectory, joint_name):
-  for i, name in enumerate(trajectory.joint_names):
-    if joint_name == name: return i
-
-def TransformPoint(point, j1_index, j2_index, max_command):
-  new_point = copy.deepcopy(point)
-
-  new_point.positions = list(point.positions)
-  new_point.velocities = list(point.velocities)
-  new_point.accelerations = list(point.accelerations)
-
-  new_point.positions[j1_index] *= max_command / 1.2;
-  new_point.velocities[j1_index] = 0.
-  new_point.accelerations[j1_index] = 0.
-
-  new_point.positions[j2_index] *= max_command / 1.2;
-  new_point.velocities[j2_index] = 0.
-  new_point.accelerations[j2_index] = 0.
-
-  return new_point
-
-def TransformFingerCommands(trajectory, max_command):
-  j1_index = GetJointIndex(trajectory, 'mico_joint_finger_1') 
-  j2_index = GetJointIndex(trajectory, 'mico_joint_finger_2') 
-  transformed_trajectory = copy.deepcopy(trajectory)
-  for i in range(len(trajectory.points)):
-    transformed_trajectory.points[i] = TransformPoint(
-        transformed_trajectory.points[i], j1_index, j2_index, max_command)
-
-  return transformed_trajectory
 
 # Prints the planning request via ros log
 def PrintPlanningRequest(request):
@@ -162,7 +132,7 @@ def main(args):
   # Create a publisher for the publishing the (finger-command-transformed_
   # final trajectory and the raw (fingers with joint values) trajectory.
   trajectory_pub = rospy.Publisher('joint_trajectory', JointTrajectory, queue_size=10)
-  raw_trajectory_pub = rospy.Publisher('joint_trajectory_raw', JointTrajectory, queue_size=10)
+  #raw_trajectory_pub = rospy.Publisher('joint_trajectory_raw', JointTrajectory, queue_size=10)
 
   #--------------------------------------------
   #- Create planning client -------------------
@@ -181,7 +151,7 @@ def main(args):
 
   # Setup the broadcast request service
   query_trajectory = rospy.ServiceProxy(
-    QueryTrajectoryRequest.DEFAULT_SERVICE_NAME, QueryTrajectory)
+      QueryTrajectoryRequest.DEFAULT_SERVICE_NAME, QueryTrajectory)
   rospy.loginfo('Waiting for trajectory broadcasting service')
   rospy.wait_for_service(BroadcastTrajectoryRequest.DEFAULT_SERVICE_NAME)
 
@@ -212,17 +182,22 @@ def main(args):
   timing = TrajectoryTiming(time_from_start, dilation_factor)
   srv_result = query_trajectory(trajectory_timing=timing)
 
+  now = rospy.Time.now()
+  rospy.set_param('trajectory_start_time_secs', now.secs)
+  rospy.set_param('trajectory_start_time_nsecs', now.nsecs)
+
+  trajectory_pub.publish(srv_result.trajectory);
   # Transform the trajectory to convert the finger jont values into commands in
   # the range [0,6000].  Note the joint limit is set to .8 (the real max is
   # 1.2), so the true range of possible commands ends up being [0,4000].
-  transformed_trajectory = TransformFingerCommands(srv_result.trajectory, 6000.)
-  trajectory_pub.publish(transformed_trajectory);
-  raw_trajectory_pub.publish(srv_result.trajectory);
+  #transformed_trajectory = tt.TransformFingerCommands(srv_result.trajectory, 6000.)
+  #trajectory_pub.publish(transformed_trajectory);
+  #raw_trajectory_pub.publish(srv_result.trajectory);
 
-  rospy.loginfo('Waiting till trajectory has been executed.')
-  rospy.sleep(srv_result.trajectory.points[-1].time_from_start);
+  #rospy.loginfo('Waiting till trajectory has been executed.')
+  #rospy.sleep(srv_result.trajectory.points[-1].time_from_start);
 
-  rospy.loginfo('Exciting planning client.')
+  rospy.loginfo('Exiting planning client.')
 
 if __name__ == '__main__':
   main(sys.argv[1:])
